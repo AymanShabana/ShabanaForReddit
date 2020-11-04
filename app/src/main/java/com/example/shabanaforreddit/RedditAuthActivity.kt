@@ -46,6 +46,7 @@ class RedditAuthActivity : AppCompatActivity() {
                 return if (url != null && url.startsWith("shabanaforredditapp://")) {
                     view!!.context.startActivity(
                             Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    finish()
                     true
                 } else {
                     false

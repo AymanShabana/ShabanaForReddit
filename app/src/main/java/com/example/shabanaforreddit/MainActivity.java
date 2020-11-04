@@ -8,21 +8,35 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.shabanaforreddit.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private Fragment selectorFragment;
-
+    SharedPreferences sharedPref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,new HomeFragment()).commit();
+        sharedPref = this.getSharedPreferences("MyShared",0);
         binding.navigation.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_home:
@@ -71,5 +86,50 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String token = sharedPref.getString("access_token","");
+        if(!token.isEmpty()){
+            RequestQueue queue = MySingleton.getInstance(getApplicationContext()).getRequestQueue();
+            String url = API.id;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            // Display the first 500 characters of the response string.
+                            Log.i("LOG_RESPONSE", response);
+                            try {
+                                JSONObject jsonResponse = new JSONObject(response);
+                                binding.profileImage.setImageURI(Uri.parse(jsonResponse.getString("icon_img")));
+                                binding.username.setText(jsonResponse.getString("display_name"));
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_RESPONSE", error.toString());
+                }
+
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    // Basic Authentication
+                    //String auth = "Basic " + Base64.encodeToString(CONSUMER_KEY_AND_SECRET.getBytes(), Base64.NO_WRAP);
+
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+            queue.add(stringRequest);
+
+        }
+
     }
 }

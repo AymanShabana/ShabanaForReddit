@@ -76,6 +76,12 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true" >
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </TextView>
         <Button
             android:id="@+id/loginBtn"
             android:layout_width="match_parent"
