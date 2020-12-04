@@ -28,12 +28,6 @@ class RedditAuthActivity : AppCompatActivity() {
                 .map(charPool::get)
                 .joinToString("");
 
-//        binding.webview.setWebViewClient(object : WebViewClient() {
-//            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-//                view.loadUrl("https://www.reddit.com/api/v1/authorize.compact?client_id=v9KZtNQ8vwgxyA&response_type=code&state="+randomString+"&redirect_uri=https://github.com/AymanShabana/ShabanaForReddit&duration=permanent&scope=identity edit flair history mysubreddits privatemessages read report save submit subscribe vote")
-//                return false
-//            }
-//        })
         val sharedPref = this?.getSharedPreferences("MyShared",0) ?: return
         with (sharedPref.edit()) {
             putString("randomString", randomString)
@@ -68,5 +62,11 @@ class RedditAuthActivity : AppCompatActivity() {
         if (binding != null) {
             binding.webview.loadUrl("https://www.reddit.com/api/v1/authorize.compact?client_id=v9KZtNQ8vwgxyA&response_type=code&state="+randomString+"&redirect_uri=shabanaforredditapp://OAuth/callback&duration=permanent&scope=identity edit flair history mysubreddits privatemessages read report save submit subscribe vote")
         }
+    }
+
+    companion object {
+        lateinit var ARG_IS_ADDING_NEW_ACCOUNT: String
+        lateinit var ARG_AUTH_TYPE: String
+        lateinit var ARG_ACCOUNT_TYPE: String
     }
 }

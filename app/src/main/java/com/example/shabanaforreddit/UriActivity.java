@@ -37,25 +37,15 @@ public class UriActivity extends AppCompatActivity {
             String code= uri.getQueryParameter("code");
             String state= uri.getQueryParameter("state");
             String error = uri.getQueryParameter("error");
-            Log.i("LOG_RESPONSE",code);
+            Log.i("LOG_RESPONSE_URI_40",code);
             sharedPref = this.getSharedPreferences("MyShared",0);
             String randomString = sharedPref.getString("randomString", "NotFound");
             //Log.i("MyTesting",randomString);
             //Log.i("MyTesting",state);
-            if(error == null)Log.i("MyTesting","NoErrors");
-            else Log.i("MyTesting",error);
+            if(error == null)Log.i("LOG_RESPONSE_URI_45","NoErrors");
+            else Log.i("LOG_RESPONSE_URI_46",error);
             // Ensure that the state variable you sent matches the value returned here.
             RequestQueue queue = MySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
-//            JSONObject jsonBody = new JSONObject();
-//            try {
-//                jsonBody.put("grant_type", "authorization_code");
-//                jsonBody.put("code", code);
-//                jsonBody.put("redirect_uri", "shabanaforredditapp://OAuth/callback");
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-            //final String mRequestBody = jsonBody.toString();
             final String mRequestBody = "grant_type=authorization_code&code="+code+"&redirect_uri=shabanaforredditapp://OAuth/callback";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www.reddit.com/api/v1/access_token",
@@ -63,14 +53,14 @@ public class UriActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(String response) {
                             // Display the first 500 characters of the response string.
-                            Log.i("LOG_RESPONSE", response.toString());
+                            Log.i("LOG_RESPONSE_URI_56", response.toString());
                             try {
                                 JSONObject JSONresponse = new JSONObject(response);
                                 SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.putString("access_token", JSONresponse.getString("access_token"));
                                 editor.putString("refresh_token", JSONresponse.getString("refresh_token"));
-                                Log.i("LOG_RESPONSE", JSONresponse.getString("access_token"));
-                                Log.i("LOG_RESPONSE", JSONresponse.getString("refresh_token"));
+                                Log.i("LOG_RESPONSE_URI_62", JSONresponse.getString("access_token"));
+                                Log.i("LOG_RESPONSE_URI_63", JSONresponse.getString("refresh_token"));
                                 editor.apply();
                                 finish();
 
@@ -78,7 +68,7 @@ public class UriActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                    }, (Response.ErrorListener) error1 -> Log.e("LOG_RESPONSE", error1.toString())){
+                    }, (Response.ErrorListener) error1 -> Log.e("LOG_RESPONSE_URI_71", error1.toString())){
                 @Override
                 public String getBodyContentType() {
                     return "application/x-www-form-urlencoded; charset=utf-8";
@@ -87,7 +77,7 @@ public class UriActivity extends AppCompatActivity {
                 @Override
                 public byte[] getBody()  {
                     try {
-                        Log.i("LOG_RESPONSE", mRequestBody);
+                        Log.i("LOG_RESPONSE_URI_80", mRequestBody);
                         return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
                     } catch (UnsupportedEncodingException uee) {
                         VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");

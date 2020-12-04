@@ -1,18 +1,14 @@
-package com.example.shabanaforreddit;
+package com.example.shabanaforreddit.Views;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,9 +18,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.shabanaforreddit.API;
+import com.example.shabanaforreddit.MySingleton;
+import com.example.shabanaforreddit.R;
+import com.example.shabanaforreddit.RedditAuthActivity;
 import com.example.shabanaforreddit.databinding.ActivityMainBinding;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,12 +97,14 @@ public class MainActivity extends AppCompatActivity {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            // Display the first 500 characters of the response string.
-                            Log.i("LOG_RESPONSE", response);
+                            Log.i("LOG_RESPONSE_Main_100", response);
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
-                                binding.profileImage.setImageURI(Uri.parse(jsonResponse.getString("icon_img")));
-                                binding.username.setText(jsonResponse.getString("display_name"));
+                                binding.profileImage.setImageBitmap(BitmapFactory.decodeFile(((jsonResponse.getString("icon_img")).split(".png"))[0]+".png"));
+                                Log.i("LOG_RESPONSE_Main_104", (((jsonResponse.getString("icon_img")).split(".png"))[0]+".png"));
+                                String username = (new JSONObject(jsonResponse.getString("subreddit"))).getString("display_name_prefixed");
+                                Log.i("LOG_RESPONSE_Main_105", username);
+                                binding.username.setText(username);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e("LOG_RESPONSE", error.toString());
+                    Log.e("LOG_RESPONSE_Main_114", error.toString());
                 }
 
             }){
