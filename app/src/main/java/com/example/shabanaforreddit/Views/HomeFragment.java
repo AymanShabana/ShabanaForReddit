@@ -3,6 +3,9 @@ package com.example.shabanaforreddit.Views;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,10 +19,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.shabanaforreddit.API;
+import com.example.shabanaforreddit.Models.Post;
 import com.example.shabanaforreddit.MySingleton;
 import com.example.shabanaforreddit.R;
+import com.example.shabanaforreddit.ViewModels.PostViewModel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +43,8 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private PostViewModel mPostViewModel;
+    private PostAdapter adapter;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -72,6 +79,14 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mPostViewModel.getAllPosts(new VolleyCallback(){
+            @Override
+            public void onSuccess(List<Post> result){
+                Log.i("LOG_RESPONSE_HF",result.get(0).toString());
+                adapter.setPosts(result);
+                adapter.notifyDataSetChanged();
+            }
+        });
         String token = ((MainActivity)getActivity()).sharedPref.getString("access_token","");
         if(!token.isEmpty()){
             RequestQueue queue = MySingleton.getInstance(getActivity().getApplicationContext()).getRequestQueue();
@@ -109,6 +124,25 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        adapter = new PostAdapter(getContext());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mPostViewModel = new ViewModelProvider(this).get(PostViewModel.class);
+        mPostViewModel.getAllPosts(new VolleyCallback(){
+            @Override
+            public void onSuccess(List<Post> result){
+                Log.i("LOG_RESPONSE_HF",result.get(0).toString());
+                adapter.setPosts(result);
+                adapter.notifyDataSetChanged();
+            }
+        });
+//        Log.i("LOG_RESPONSE_HF",mPostViewModel.getAllPosts().get(0).toString());
+        return view;
     }
+    public interface VolleyCallback{
+        void onSuccess(List<Post> result);
+    }
+
 }

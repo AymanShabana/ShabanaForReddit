@@ -37,12 +37,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostAdapter.PostViewHolder holder, int position) {
         if (mPosts != null) {
             Post current = mPosts.get(position);
-            //holder.nameItemView.setText(current.getName());
-            //holder.numberItemView.setText(current.getNumber());
+            holder.subreddit_name.setText(current.getSubreddit());
+            holder.post_time.setText(current.getTimeSinceCreation());
+            holder.awards_lbl.setText(current.getAwards()+" awards");
+            holder.post_title.setText(current.getTitle());
+            holder.upvotes_lbl.setText(current.getUpvotes()+"");
+            holder.comments_lbl.setText(current.getComments()+"");
         } else {
-            // Covers the case of data not being ready yet.
-            //holder.nameItemView.setText("No Contacts");
-            //holder.numberItemView.setText("");
+            holder.subreddit_name.setText("Loading...");
         }
 
     }
@@ -65,6 +67,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private final ImageButton more_btn;
         private final TextView awards_lbl;
         private final TextView post_title;
+        private final ImageView post_img;
         private final ImageButton upvote_btn;
         private final TextView upvotes_lbl;
         private final ImageButton downvote_btn;
@@ -81,7 +84,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             more_btn = itemView.findViewById(R.id.more_btn);
             awards_lbl = itemView.findViewById(R.id.awards_lbl);
             post_title = itemView.findViewById(R.id.post_title);
-            upvote_btn = itemView.findViewById(R.id.subreddit_name);
+            post_img = itemView.findViewById(R.id.post_img);
+            upvote_btn = itemView.findViewById(R.id.upvote_btn);
             upvotes_lbl = itemView.findViewById(R.id.upvotes_lbl);
             downvote_btn = itemView.findViewById(R.id.downvote_btn);
             comments_btn = itemView.findViewById(R.id.comments_btn);
