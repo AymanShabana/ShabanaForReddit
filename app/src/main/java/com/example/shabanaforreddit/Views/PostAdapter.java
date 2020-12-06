@@ -1,6 +1,8 @@
 package com.example.shabanaforreddit.Views;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shabanaforreddit.Models.Post;
+import com.example.shabanaforreddit.MySingleton;
 import com.example.shabanaforreddit.R;
+import com.example.shabanaforreddit.Utils;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -21,9 +27,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private final LayoutInflater mInflater;
     private List<Post> mPosts; // Cached copy of posts
-
+    private Context context;
     public PostAdapter(Context context) {
-        this.mInflater = LayoutInflater.from(context); ;
+        this.mInflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     @NonNull
@@ -43,6 +50,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.post_title.setText(current.getTitle());
             holder.upvotes_lbl.setText(current.getUpvotes()+"");
             holder.comments_lbl.setText(current.getComments()+"");
+            //Bitmap temp = MySingleton.getInstance(context).getImageLoader().
+            new Utils.DownloadImageTask(holder).execute(current.getPostImg());
         } else {
             holder.subreddit_name.setText("Loading...");
         }
@@ -67,7 +76,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private final ImageButton more_btn;
         private final TextView awards_lbl;
         private final TextView post_title;
-        private final ImageView post_img;
+        public final ImageView post_img;
         private final ImageButton upvote_btn;
         private final TextView upvotes_lbl;
         private final ImageButton downvote_btn;

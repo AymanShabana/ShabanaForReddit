@@ -1,13 +1,19 @@
 package com.example.shabanaforreddit.Models;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.io.IOException;
+import java.net.URL;
+import java.time.Instant;
 import java.util.Date;
 
 @Entity(tableName = "post_table")
@@ -102,7 +108,7 @@ public class Post {
         return author;
     }
     public String getTimeSinceCreation() {
-        long s = (long) (new Date().getTime() - created/1000.0f);//seconds
+        long s = (long) ((new Date().getTime() - created*1000)/1000.0f);//seconds
         String res = s+"s";
         if(s>=60) {
             s /= 60.0f;//minutes
