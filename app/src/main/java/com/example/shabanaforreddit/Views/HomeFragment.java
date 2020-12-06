@@ -23,6 +23,9 @@ import com.example.shabanaforreddit.Models.Post;
 import com.example.shabanaforreddit.MySingleton;
 import com.example.shabanaforreddit.R;
 import com.example.shabanaforreddit.ViewModels.PostViewModel;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.HashMap;
 import java.util.List;
@@ -124,6 +127,9 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getActivity()));
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         adapter = new PostAdapter(getContext());

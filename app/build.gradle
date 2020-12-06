@@ -62,4 +62,6 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:$rootProject.roomVersion"
     androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
 
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
 }

@@ -17,6 +17,8 @@ import com.example.shabanaforreddit.Models.Post;
 import com.example.shabanaforreddit.MySingleton;
 import com.example.shabanaforreddit.R;
 import com.example.shabanaforreddit.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;
 import java.net.URL;
@@ -51,7 +53,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.upvotes_lbl.setText(current.getUpvotes()+"");
             holder.comments_lbl.setText(current.getComments()+"");
             //Bitmap temp = MySingleton.getInstance(context).getImageLoader().
-            new Utils.DownloadImageTask(holder).execute(current.getPostImg());
+            //new Utils.DownloadImageTask(holder).execute(current.getPostImg());
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .build();
+            if(!current.getPostImg().startsWith("http"))
+                holder.post_img.setImageBitmap(null);
+            else
+                imageLoader.displayImage(current.getPostImg(), holder.post_img,options);
         } else {
             holder.subreddit_name.setText("Loading...");
         }
