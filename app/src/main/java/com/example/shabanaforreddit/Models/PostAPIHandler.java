@@ -3,6 +3,7 @@ package com.example.shabanaforreddit.Models;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -22,6 +23,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.shabanaforreddit.API;
 import com.example.shabanaforreddit.MySingleton;
 import com.example.shabanaforreddit.Views.HomeFragment;
+import com.example.shabanaforreddit.Views.PostAdapter;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,6 +97,9 @@ public class PostAPIHandler {
                                 //Log.i("RESPONSE_LOG_POST",link);
                                 String author = data.getString("author");
                                 //Log.i("RESPONSE_LOG_POST",author);
+
+                                //subreddit_img = getSubredditImg(subreddit);
+
                                 Post post = new Post(title,subreddit,subreddit_img,post_img,upvotes,comments,awards,created,link,author);
                                 Log.i("LOG_RESPONSE_POST",post.toString());
                                 dataList.add(post);
@@ -126,6 +133,33 @@ public class PostAPIHandler {
 
         MySingleton.getInstance(mContext).addToRequestQueue(jsonObjectRequest);
 
-    };
+    }
+
+    public static void getSubredditImg(String subreddit, PostAdapter.PostViewHolder view) {
+        String url ="https://api.reddit.com/"+subreddit+"/about";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        String link = response.split("icon_img\": \"")[1];
+                        link = link.split("\"")[0];
+                        Log.i("LOG_RESPONSE_PAH_142",link);
+                        ImageLoader imageLoader = ImageLoader.getInstance();
+                        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                                .cacheInMemory(true)
+                                .cacheOnDisk(true)
+                                .build();
+                        imageLoader.displayImage(link, view.subreddit_img, options);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("LOG_RESPONSE_PAH_142",error.getMessage());
+            }
+        });
+        MySingleton.getInstance(mContext).addToRequestQueue(stringRequest);
+    }
+
 
 }

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shabanaforreddit.Models.Post;
+import com.example.shabanaforreddit.Models.PostAPIHandler;
 import com.example.shabanaforreddit.MySingleton;
 import com.example.shabanaforreddit.R;
 import com.example.shabanaforreddit.Utils;
@@ -59,10 +60,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
                     .build();
-            if(!current.getPostImg().startsWith("http"))
-                holder.post_img.setImageBitmap(null);
-            else
-                imageLoader.displayImage(current.getPostImg(), holder.post_img,options);
+            if(!current.getPostImg().startsWith("http")) {
+                holder.post_img.setVisibility(View.GONE);
+            }
+            else {
+                holder.post_img.setVisibility(View.VISIBLE);
+                imageLoader.displayImage(current.getPostImg(), holder.post_img, options);
+            }
+            PostAPIHandler.getSubredditImg(current.getSubreddit(),holder);
         } else {
             holder.subreddit_name.setText("Loading...");
         }
@@ -81,7 +86,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        private final CircleImageView subreddit_img;
+        public final CircleImageView subreddit_img;
         private final TextView subreddit_name;
         private final TextView post_time;
         private final ImageButton more_btn;
